@@ -195,7 +195,7 @@ In total, 15 visualizations are saved in the `visuals/` folder. Selected charts:
   </tr>
   <tr>
     <td align="center"><b>Churn by Tenure</b><br><img src="visuals/03_churn_by_tenure.png" width="420"></td>
-    <td align="center"><b>Monthly Charges</b><br><img src="visuals/14_monthly_charges_boxplot.png" width="420"></td>
+    <td align="center"><b>Monthly Charges</b><br><img src="visuals/13_monthly_charges_boxplot.png" width="420"></td>
   </tr>
   <tr>
     <td align="center" colspan="2"><b>Total Charges</b><br><img src="visuals/15_total_charges_boxplot.png" width="420"></td>
