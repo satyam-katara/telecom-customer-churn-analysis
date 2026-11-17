@@ -1,13 +1,14 @@
-<h1 align="center">📉 Telecom Customer Churn Analysis</h1>
+# 📉 Telecom Customer Churn Analysis
 
 <p align="center">
-  <b>End-to-end data analytics project using SQL Server, Python and statistical testing</b>
+  <b>End-to-end data analytics and machine learning project using SQL Server, Python and statistical testing</b>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white" alt="Python">
   <img src="https://img.shields.io/badge/SQL%20Server-Analysis-CC2927?logo=microsoftsqlserver&logoColor=white" alt="SQL Server">
   <img src="https://img.shields.io/badge/Pandas-EDA-150458?logo=pandas&logoColor=white" alt="Pandas">
+  <img src="https://img.shields.io/badge/Scikit--learn-Machine%20Learning-F7931E?logo=scikitlearn&logoColor=white" alt="Scikit-learn">
   <img src="https://img.shields.io/badge/Jupyter-Notebooks-F37626?logo=jupyter&logoColor=white" alt="Jupyter">
   <img src="https://img.shields.io/badge/Domain-Telecom-0A66C2" alt="Domain">
 </p>
@@ -20,15 +21,16 @@
 - [Quick Results](#-quick-results)
 - [Business Objectives](#-business-objectives)
 - [Dataset](#-dataset)
-- [Tools and Technologies](#-tools-and-technologies)
+- [Tools and Technologies](#️-tools-and-technologies)
 - [Project Workflow](#-project-workflow)
 - [Key Insights](#-key-insights)
 - [Revenue Analysis](#-revenue-analysis)
 - [Python EDA](#-python-eda)
 - [Statistical Hypothesis Testing](#-statistical-hypothesis-testing)
-- [Retention Strategies](#-retention-strategies)
-- [Limitations](#-limitations)
-- [Project Structure](#-project-structure)
+- [Retention Strategies](#️-retention-strategies)
+- [Machine Learning - Churn Prediction](#machine-learning---churn-prediction)
+- [Limitations](#️-limitations)
+- [Project Structure](#️-project-structure)
 - [How to Run](#-how-to-run)
 - [Executive Summary Report](#-executive-summary-report)
 - [Conclusion](#-conclusion)
@@ -41,18 +43,22 @@ Customer churn is a major business problem for telecom companies. Every customer
 
 This project studies telecom customer data to find churn patterns, understand customer behavior, estimate revenue exposure and suggest data-driven retention strategies.
 
-The work follows a full analytics workflow: SQL Server analysis, Python exploratory data analysis (EDA) and statistical hypothesis testing.
+The project follows an end-to-end analytics workflow covering SQL Server analysis, Python exploratory data analysis (EDA), statistical hypothesis testing, retention strategy development and machine learning-based churn prediction.
 
 ## ⚡ Quick Results
 
 | Metric | Result |
 |---|---:|
+| Total customers | 7,043 |
 | Overall churn rate | **26.54%** |
-| Churn rate, month-to-month contracts | **42.71%** |
-| Churn rate, new customers (0–12 months) | **47.44%** |
-| Churn rate, electronic check users | **45.29%** |
-| Churn rate, fiber optic users | **41.89%** |
+| Retention rate | **73.46%** |
+| Month-to-month churn rate | **42.71%** |
+| New customer churn rate (0–12 months) | **47.44%** |
+| Electronic check churn rate | **45.29%** |
+| Fiber optic churn rate | **41.89%** |
 | Monthly charges tied to churned customers | **$139,130.85** |
+| Best test ROC-AUC | **84.34%** |
+| Best top-decile lift | **2.91x** |
 
 ## 🎯 Business Objectives
 
@@ -62,6 +68,8 @@ The work follows a full analytics workflow: SQL Server analysis, Python explorat
 - Measure revenue exposure from churned customers.
 - Use statistical tests to validate the patterns found.
 - Develop practical retention recommendations.
+- Build machine learning models to predict customer churn.
+- Identify high-risk active customers for targeted retention campaigns.
 
 ## 📦 Dataset
 
@@ -85,20 +93,22 @@ The data includes customer demographics, account information, subscribed service
 | Visualization | Matplotlib, Seaborn |
 | Database | Microsoft SQL Server |
 | Statistics | SciPy, Statsmodels |
+| Machine Learning | Scikit-learn |
 | Development | Jupyter Notebook, VS Code |
 | Version control | Git, GitHub |
 
 ## 🔄 Project Workflow
 
 1. Data profiling
-2. Data cleaning
+2. Data cleaning and preprocessing
 3. SQL-based churn analysis
 4. SQL-based revenue analysis
 5. Python exploratory data analysis
 6. Statistical hypothesis testing
 7. Retention strategy development
-8. Executive summary report
-9. GitHub documentation
+8. Machine learning model development and evaluation
+9. High-risk customer identification
+10. Executive summary report and GitHub documentation
 
 ## 💡 Key Insights
 
@@ -282,11 +292,101 @@ Three priority segments were selected based on the analysis.
 
 > **Pilot approach:** Test each initiative with a treatment-versus-control pilot before rolling it out widely.
 
+## 🤖 Machine Learning - Churn Prediction
+
+A machine learning workflow was developed to predict customer churn and identify high-risk active customers.
+
+### Models Evaluated
+
+- Logistic Regression (Baseline)
+- Gradient Boosting Classifier
+
+### Model Development
+
+- Target variable: `Churn` (Yes = 1, No = 0)
+- Train-test split: Stratified 80/20
+- Random state: 42
+- Numeric preprocessing: Median imputation and standard scaling
+- Categorical preprocessing: Most-frequent imputation and one-hot encoding
+- Cross-validation: Stratified 5-fold cross-validation
+- Missing `TotalCharges` values were handled inside the preprocessing pipeline to avoid data leakage.
+
+### Model Performance
+
+Models were evaluated on the held-out test set.
+
+| Metric | Logistic Regression | Gradient Boosting |
+|---|---:|---:|
+| Accuracy | 80.48% | 80.62% |
+| Precision | 65.62% | 67.35% |
+| Recall | 55.61% | 52.41% |
+| F1-score | 60.20% | 58.95% |
+| ROC-AUC | 84.19% | 84.34% |
+| Cross-validation AUC | 84.62% | 84.76% |
+| Top-decile lift | 2.81x | 2.91x |
+
+**Selected model:** Gradient Boosting was provisionally selected for high-risk customer ranking based on its slightly higher ROC-AUC, precision and top-decile lift.
+
+Logistic Regression achieved higher recall and F1-score at the default 0.50 classification threshold.
+
+### Top-Decile Lift Analysis
+
+The top 10% of customers ranked by predicted churn probability were evaluated.
+
+| Metric | Logistic Regression | Gradient Boosting |
+|---|---:|---:|
+| Customers in top 10% | 141 | 141 |
+| Top-decile churn rate | 74.47% | 77.30% |
+| Overall churn rate | 26.54% | 26.54% |
+| Top-decile lift | 2.81x | 2.91x |
+| Share of test churners captured | 28.07% | 29.14% |
+
+**Business interpretation:** Gradient Boosting identified a top-risk group with a 77.30% churn rate, compared with the overall test-set churn rate of 26.54%.
+
+### Key Predictive Features
+
+The top 10 features from the Gradient Boosting model were:
+
+| Rank | Feature | Importance |
+|---:|---|---:|
+| 1 | Month-to-month contract | 0.379910 |
+| 2 | Tenure | 0.138642 |
+| 3 | Fiber optic internet | 0.086523 |
+| 4 | Total charges | 0.086156 |
+| 5 | Monthly charges | 0.081947 |
+| 6 | No online security | 0.068142 |
+| 7 | Electronic check payment | 0.044430 |
+| 8 | No tech support | 0.037823 |
+| 9 | Paperless billing - No | 0.010662 |
+| 10 | Multiple lines - No | 0.010302 |
+
+**Key finding:** Month-to-month contract status was the strongest predictive feature in the Gradient Boosting model.
+
+Feature importance represents predictive contribution, not causation.
+
+### Active Customer Winback List
+
+A top-100 high-risk active customer list was generated using the held-out test set.
+
+| Metric | Result |
+|---|---:|
+| Active customers selected | 100 |
+| Combined monthly charges | $7,782.00 |
+| Highest predicted churn probability in selected group | 88.04% |
+
+The list contains customer IDs, predicted churn probabilities and monthly charges. It demonstrates how a churn model can help prioritize retention campaigns.
+
+> **Note:** This is a retrospective demonstration using held-out test customers. The $7,782 represents the combined monthly charges associated with the selected customers, not guaranteed revenue at risk. Model probabilities and rankings require further validation before operational deployment.
+
 ## ⚠️ Limitations
 
 - Results show associations, not causes.
 - The revenue figure is an illustrative run-rate, not realized loss.
 - The data is a single snapshot from one public dataset, so findings may not carry over to other telecom companies.
+- Model performance is based on one train-test split and cross-validation on the training set.
+- Classification thresholds have not been optimized for a real retention campaign.
+- The winback list is a demonstration, not a live production system.
+- Feature importance does not establish causal relationships.
 
 ## 🗂️ Project Structure
 
@@ -296,6 +396,8 @@ telecom-customer-churn-analysis/
 ├── data/
 │   ├── raw/
 │   └── processed/
+│       ├── telco_churn_cleaned.csv
+│       └── winback_list_test.csv
 │
 ├── sql/
 │   ├── 01_data_profiling.sql
@@ -307,7 +409,8 @@ telecom-customer-churn-analysis/
 │   ├── 01_data_understanding.ipynb
 │   ├── 02_eda.ipynb
 │   ├── 03_statistical_testing.ipynb
-│   └── 04_retention_strategy.ipynb
+│   ├── 04_retention_strategy.ipynb
+│   └── 05_churn_prediction.ipynb
 │
 ├── reports/
 │   └── Telecom_Customer_Churn_Executive_Summary.pdf
@@ -321,63 +424,75 @@ telecom-customer-churn-analysis/
 
 ## 🚀 How to Run
 
-**1. Clone the repository**
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/satyam-katara/telecom-customer-churn-analysis.git
 cd telecom-customer-churn-analysis
 ```
 
-**2. Create a virtual environment**
+### 2. Create a virtual environment
 
 ```bash
 python -m venv venv
 ```
 
-**3. Activate it**
+### 3. Activate the virtual environment
+
+**Windows CMD**
+
+```cmd
+venv\Scripts\activate.bat
+```
+
+**Windows PowerShell**
 
 ```powershell
-# Windows (PowerShell)
 .\venv\Scripts\Activate.ps1
 ```
 
+**macOS / Linux**
+
 ```bash
-# macOS / Linux
 source venv/bin/activate
 ```
 
-**4. Install dependencies**
+### 4. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-**5. Run the notebooks**
+### 5. Run the notebooks
 
 ```bash
 jupyter notebook
 ```
 
-Run the notebooks in order, from `01` to `04`.
+Run the notebooks in order, from `01` to `05`.
 
-**6. Run the SQL scripts**
+### 6. Run the SQL scripts
 
 Set up SQL Server, create the `TelecomChurnDB` database, load the cleaned customer table and run the scripts in the `sql/` folder in order.
 
 ## 📄 Executive Summary Report
 
-The final summary is here: [`reports/Telecom_Customer_Churn_Executive_Summary.pdf`](reports/Telecom_Customer_Churn_Executive_Summary.pdf)
+The final summary is here:
+
+[`reports/Telecom_Customer_Churn_Executive_Summary.pdf`](reports/Telecom_Customer_Churn_Executive_Summary.pdf)
 
 ## ✅ Conclusion
 
-Four groups are linked to higher churn: month-to-month customers, new customers, electronic check users and fiber optic users.
+The analysis identified four customer groups associated with higher churn: month-to-month customers, new customers, electronic check users and fiber optic users.
 
-By combining SQL analysis, Python EDA and statistical testing, this project gives a clear picture of who churns and suggests ways to improve retention. A telecom business can use these findings to focus customer support, look into likely churn drivers and design measurable retention experiments.
+By combining SQL analysis, Python EDA, statistical testing, retention strategy development and machine learning, this project provides an end-to-end view of telecom customer churn.
+
+The machine learning workflow achieved a test ROC-AUC of 84.34% with Gradient Boosting and a top-decile lift of 2.91x. These findings demonstrate how predictive analytics can help prioritize high-risk customers and support data-driven retention initiatives.
 
 ---
 
 <p align="center">
-  <b>Project Type:</b> End-to-End Data Analytics &nbsp;|&nbsp;
+  <b>Project Type:</b> End-to-End Data Analytics & Machine Learning &nbsp;|&nbsp;
   <b>Domain:</b> Telecommunications &nbsp;|&nbsp;
-  <b>Focus:</b> Churn, Revenue Analysis, Statistical Testing, Retention Strategy
+  <b>Focus:</b> Churn Analysis, Revenue Analysis, Statistical Testing, Retention Strategy and Prediction
 </p>
